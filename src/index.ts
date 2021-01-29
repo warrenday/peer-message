@@ -1,1 +1,1 @@
-export { MessagingClient } from './MessagingClient';
+export { PeerMessage } from './PeerClient';

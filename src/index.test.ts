@@ -1,4 +1,4 @@
-import { MessagingClient } from './MessagingClient';
+import { PeerMessage } from './PeerClient';
 
 jest.mock('simple-peer');
 
@@ -10,22 +10,22 @@ const mockConfig = {
   },
 };
 
-describe('MessagingClient', () => {
+describe('PeerMessage', () => {
   it('creates a new channel and becomes the channel host', () => {
-    const client = new MessagingClient(mockConfig);
+    const client = new PeerMessage(mockConfig);
     client.host();
 
     expect(client.isHost).toBe(true);
   });
 
   it('joins a new channel without error', () => {
-    const client = new MessagingClient(mockConfig);
+    const client = new PeerMessage(mockConfig);
     client.join();
   });
 
   it('adds an event listener', () => {
     const mockCallback = jest.fn();
-    const client = new MessagingClient(mockConfig) as any;
+    const client = new PeerMessage(mockConfig) as any;
 
     client.on('data', mockCallback);
 
@@ -42,7 +42,7 @@ describe('MessagingClient', () => {
 
     const mockCallback1 = jest.fn();
     const mockCallback2 = jest.fn();
-    const client = new MessagingClient(mockConfig) as any;
+    const client = new PeerMessage(mockConfig) as any;
     const remove1 = client.on('data', mockCallback1);
     const remove2 = client.on('data', mockCallback2);
 
@@ -72,7 +72,7 @@ describe('MessagingClient', () => {
   });
 
   it('sends a stringified message', () => {
-    const client = new MessagingClient(mockConfig) as any;
+    const client = new PeerMessage(mockConfig) as any;
     client.peerClient = {
       send: jest.fn(),
     };
@@ -85,7 +85,7 @@ describe('MessagingClient', () => {
   it('removes all event listeners', () => {
     const mockCallback1 = jest.fn();
     const mockCallback2 = jest.fn();
-    const client = new MessagingClient(mockConfig) as any;
+    const client = new PeerMessage(mockConfig) as any;
     client.on('data', mockCallback1);
     client.on('data', mockCallback2);
 

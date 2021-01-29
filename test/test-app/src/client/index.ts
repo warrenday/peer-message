@@ -1,9 +1,9 @@
-import { MessagingClient } from '../../../../src/MessagingClient';
+import { PeerMessage } from '../../../../src';
 import * as websocket from './websocket';
 import { ConnectionStatus } from '../../../types';
 
 const start = () => {
-  const messagingClient = new MessagingClient({
+  const peerMessage = new PeerMessage({
     signal: {
       channel: 'test-channel',
       send: data => {
@@ -27,26 +27,26 @@ const start = () => {
 
   statusElem.innerHTML === ('initial' as ConnectionStatus);
 
-  messagingClient.on('connect', () => {
+  peerMessage.on('connect', () => {
     statusElem.innerHTML = 'connected' as ConnectionStatus;
   });
-  messagingClient.on('disconnect', () => {
+  peerMessage.on('disconnect', () => {
     statusElem.innerHTML = 'disconnected' as ConnectionStatus;
   });
-  messagingClient.on('data', data => {
+  peerMessage.on('data', data => {
     messagesElem.innerHTML += `<p>${data.message}</p>`;
   });
 
   if (isHost) {
     console.log('hosting');
-    messagingClient.host();
+    peerMessage.host();
   } else {
     console.log('joining');
-    messagingClient.join();
+    peerMessage.join();
   }
 
   newMessageButton.addEventListener('click', () => {
-    messagingClient.send({ message: newMessageInput.value });
+    peerMessage.send({ message: newMessageInput.value });
     newMessageInput.value = '';
   });
 };

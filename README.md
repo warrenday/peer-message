@@ -6,7 +6,7 @@ Fast peer to peer messaging through WebRTC
 
 Sending data between clients on the web is inherently slow due to two reasons.
 
-1. Data must travel to from client -> server -> client. This means a longer round trip for your data and increased latency.
+1. Data must travel from client -> server -> client. This means a longer round trip for your data and increased latency.
 
 2. Data is sent using TCP, this favoures reliability over speed as packets must be delivered in the correct order.
 
@@ -45,6 +45,7 @@ Create a new instance of PeerMessage which accepts signaling config and optional
 
 ```ts
 const peerMessage = new PeerMessage({
+  iceConfig: [],
   signal: {
     channel: 'test-channel',
     send: data => {
@@ -96,6 +97,83 @@ Connect to a host
 
 ```ts
 peerMessage.join();
+```
+
+## Signaling
+
+Signaling is needed in order for two peers to share how they should connect. Usually this is solved through a regular HTTP-based Web API (i.e., a REST service or WebSockets) where web applications can relay the necessary information before the peer connection is initiated.
+
+PeerMessage makes signaling easy. Here is an example of signaling using websockets. You simply need to relay the information given and received.
+
+```ts
+const start = () => {
+  const peerMessage = new PeerMessage({
+    iceConfig: [],
+    signal: {
+      channel: 'test-channel',
+      send: data => {
+        websocket.send(data);
+      },
+      receive: update => {
+        websocket.onmessage(data => {
+          update(data);
+        });
+      },
+    },
+  });
+};
+
+websocket.onconnected(() => {
+  start();
+});
+```
+
+## IceConfig
+
+Clients may not be able to connect directly if they are behind a NAT or when connecting over a mobile network such as 3/4G. You can read more detail on this here [https://bloggeek.me/webrtc-turn/](https://bloggeek.me/webrtc-turn/)
+
+We provide a default config pointing to free stun servers hosted by google. However you should not rely on this for production.
+
+```json
+[
+  { "urls": "stun:stun.l.google.com:19302" },
+  { "urls": "stun:global.stun.twilio.com:3478?transport=udp" }
+]
+```
+
+Here is an example of turn/stun config provided by twilio. [https://www.twilio.com/stun-turn](https://www.twilio.com/stun-turn)
+
+```json
+[
+  {
+    "url": "stun:global.stun.twilio.com:3478?transport=udp",
+    "urls": "stun:global.stun.twilio.com:3478?transport=udp"
+  },
+  {
+    "url": "turn:global.turn.twilio.com:3478?transport=udp",
+    "username": "9e4b5cd9b97055a182295750fcf27000a51fd167d43061f379a49002bc9d5ef5",
+    "urls": "turn:global.turn.twilio.com:3478?transport=udp",
+    "credential": "jf308/4r9+uPbeEYn+ho918XDlVWVWcdtWJ/Bd7R1eP="
+  },
+  {
+    "url": "turn:global.turn.twilio.com:3478?transport=tcp",
+    "username": "9e4b5cd9b97055a182295750fcf27000a51fd167d43061f379a49002bc9d5ef5",
+    "urls": "turn:global.turn.twilio.com:3478?transport=tcp",
+    "credential": "jf308/4r9+uPbeEYn+ho918XDlVWVWcdtWJ/Bd7R1eP="
+  },
+  {
+    "url": "turn:global.turn.twilio.com:443?transport=tcp",
+    "username": "9e4b5cd9b97055a182295750fcf27000a51fd167d43061f379a49002bc9d5ef5",
+    "urls": "turn:global.turn.twilio.com:443?transport=tcp",
+    "credential": "jf308/4r9+uPbeEYn+ho918XDlVWVWcdtWJ/Bd7R1eP="
+  }
+]
+```
+
+```ts
+const peerMessage = new PeerMessage({
+  iceConfig: [],
+});
 ```
 
 ## Licence

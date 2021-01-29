@@ -14,7 +14,7 @@ type SignalConfig = {
   send: (message: string) => void;
   receive: (update: (message: string) => void) => void;
 };
-type MessagingClientArgs = {
+type PeerMessageArgs = {
   signal: SignalConfig;
   iceConfig?: IceConfig;
 };
@@ -26,13 +26,13 @@ const defaultIceConfig: IceConfig = [
   { urls: 'stun:global.stun.twilio.com:3478?transport=udp' },
 ];
 
-export class MessagingClient extends EventEmitter<EventType, EventCallback> {
+export class PeerMessage extends EventEmitter<EventType, EventCallback> {
   public isHost: boolean = false;
   private iceConfig: IceConfig;
   private peerClient?: SimplePeer.Instance;
   private signalingClient: SignalingClient;
 
-  constructor({ signal, iceConfig }: MessagingClientArgs) {
+  constructor({ signal, iceConfig }: PeerMessageArgs) {
     super();
 
     this.iceConfig = iceConfig || defaultIceConfig;
