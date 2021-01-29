@@ -1,103 +1,112 @@
-# TSDX User Guide
+# Peer Message
 
-Congrats! You just saved yourself hours of work by bootstrapping this project with TSDX. Let’s get you oriented with what’s here and how to use it.
+Fast peer to peer messaging through WebRTC
 
-> This TSDX setup is meant for developing libraries (not apps!) that can be published to NPM. If you’re looking to build a Node app, you could use `ts-node-dev`, plain `ts-node`, or simple `tsc`.
+## Problem
 
-> If you’re new to TypeScript, checkout [this handy cheatsheet](https://devhints.io/typescript)
+Sending data between clients on the web is inherently slow due to two reasons.
 
-## Commands
+1. Data must travel to from client -> server -> client. This means a longer round trip for your data and increased latency.
 
-TSDX scaffolds your new library inside `/src`.
+2. Data is sent using TCP, this favoures reliability over speed as packets must be delivered in the correct order.
 
-To run TSDX, use:
+## Solution
 
-```bash
-npm start # or yarn start
+WebRTC is an open standard for sending information directly between clients. This technology supports video and voice but also arbitrary data. By utilising this we can acheive sub 80ms messaging between clients.
+[Read more about WebRTC](https://webrtc.org/)
+
+## Installation
+
+`npm i peer-message`
+
+## Usage Example
+
+```ts
+import { PeerMessage } from 'peer-message';
+
+const peerMessage = new PeerMessage(...args);
+
+peerMessage.on('data', data => {
+  // handle data
+});
+
+peerMessage.on('connect', () => {
+  peerMessage.send('hello world');
+});
+
+peerMessage.host();
 ```
 
-This builds to `/dist` and runs the project in watch mode so any edits you save inside `src` causes a rebuild to `/dist`.
+## Documentation
 
-To do a one-off build, use `npm run build` or `yarn build`.
+### PeerMessage
 
-To run tests, use `npm test` or `yarn test`.
+Create a new instance of PeerMessage which accepts signaling config and optional iceConfig.
 
-## Configuration
-
-Code quality is set up for you with `prettier`, `husky`, and `lint-staged`. Adjust the respective fields in `package.json` accordingly.
-
-### Jest
-
-Jest tests are set up to run with `npm test` or `yarn test`.
-
-### Bundle Analysis
-
-[`size-limit`](https://github.com/ai/size-limit) is set up to calculate the real cost of your library with `npm run size` and visualize the bundle with `npm run analyze`.
-
-#### Setup Files
-
-This is the folder structure we set up for you:
-
-```txt
-/src
-  index.tsx       # EDIT THIS
-/test
-  blah.test.tsx   # EDIT THIS
-.gitignore
-package.json
-README.md         # EDIT THIS
-tsconfig.json
+```ts
+const peerMessage = new PeerMessage({
+  signal: {
+    channel: 'test-channel',
+    send: data => {
+      websocket.send(data);
+    },
+    receive: update => {
+      websocket.onmessage(data => {
+        update(data);
+      });
+    },
+  },
+});
 ```
 
-### Rollup
+### on
 
-TSDX uses [Rollup](https://rollupjs.org) as a bundler and generates multiple rollup configs for various module formats and build settings. See [Optimizations](#optimizations) for details.
+Listen for events.
 
-### TypeScript
+Possible events are
 
-`tsconfig.json` is set up to interpret `dom` and `esnext` types, as well as `react` for `jsx`. Adjust according to your needs.
+connect - Clients have successully established a connection
+disconnect - The connection between two clients was lost or closed
+data - Data was received from a remote client
+error - An error has occured
 
-## Continuous Integration
-
-### GitHub Actions
-
-Two actions are added by default:
-
-- `main` which installs deps w/ cache, lints, tests, and builds on all pushes against a Node and OS matrix
-- `size` which comments cost comparison of your library on every pull request using [`size-limit`](https://github.com/ai/size-limit)
-
-## Optimizations
-
-Please see the main `tsdx` [optimizations docs](https://github.com/palmerhq/tsdx#optimizations). In particular, know that you can take advantage of development-only optimizations:
-
-```js
-// ./types/index.d.ts
-declare var __DEV__: boolean;
-
-// inside your code...
-if (__DEV__) {
-  console.log('foo');
-}
+```ts
+peerMessage.on('data', () => {});
 ```
 
-You can also choose to install and use [invariant](https://github.com/palmerhq/tsdx#invariant) and [warning](https://github.com/palmerhq/tsdx#warning) functions.
+### send
 
-## Module Formats
+Send data to a remote client. Objects are stringified/parsed automatically.
 
-CJS, ESModules, and UMD module formats are supported.
+```ts
+peerMessage.send({ hello: 'world' });
+```
 
-The appropriate paths are configured in `package.json` and `dist/index.js` accordingly. Please report if any issues are found.
+### host
 
-## Named Exports
+Host a channel
 
-Per Palmer Group guidelines, [always use named exports.](https://github.com/palmerhq/typescript#exports) Code split inside your React app instead of your React library.
+```ts
+peerMessage.host();
+```
 
-## Including Styles
+### join
 
-There are many ways to ship styles, including with CSS-in-JS. TSDX has no opinion on this, configure how you like.
+Connect to a host
 
-For vanilla CSS, you can include it at the root directory and add it to the `files` section in your `package.json`, so that it can be imported separately by your users and run through their bundler's loader.
+```ts
+peerMessage.join();
+```
 
-## Publishing to NPM
+## Licence
 
-We recommend using [np](https://github.com/sindresorhus/np).
+The MIT License (MIT)
+
+Copyright (c) 2020 GraphQL Mock Network Authors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+`
