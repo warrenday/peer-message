@@ -66,9 +66,9 @@ Listen for events.
 
 Possible events are
 
-connect - Clients have successully established a connection
-disconnect - The connection between two clients was lost or closed
-data - Data was received from a remote client
+connect - Clients have successully established a connection  
+disconnect - The connection between two clients was lost or closed  
+data - Data was received from a remote client  
 error - An error has occured
 
 ```ts
@@ -143,8 +143,6 @@ We provide a default config pointing to free stun servers hosted by google. Howe
 
 Here is an example of using turn/stun config provided by twilio. [https://www.twilio.com/stun-turn](https://www.twilio.com/stun-turn)
 
-Provide the array of stun/turn config to iceConfig.
-
 ```ts
 const peerMessage = new PeerMessage({
   iceConfig: [
@@ -176,6 +174,12 @@ const peerMessage = new PeerMessage({
   ],
 });
 ```
+
+## Test App
+
+See our example test app for a complete example with signaling
+
+[Test App](./test/test-app)
 
 ## Licence
 
