@@ -1,0 +1,20 @@
+{
+  "name": "test-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "warren",
+  "license": "MIT",
+  "dependencies": {
+    "ws": "^7.4.2"
+  },
+  "devDependencies": {
+    "@types/ws": "^7.4.0",
+    "parcel": "^1.12.4",
+    "typescript": "^4.1.3"
+  },
+  "scripts": {
+    "start": "yarn start:client & yarn start:server",
+    "start:client": "parcel ./src/client/index.html --port 3001",
+    "start:server": "node ./src/server.js"
+  }
+}
