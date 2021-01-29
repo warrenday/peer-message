@@ -141,38 +141,39 @@ We provide a default config pointing to free stun servers hosted by google. Howe
 ]
 ```
 
-Here is an example of turn/stun config provided by twilio. [https://www.twilio.com/stun-turn](https://www.twilio.com/stun-turn)
+Here is an example of using turn/stun config provided by twilio. [https://www.twilio.com/stun-turn](https://www.twilio.com/stun-turn)
 
-```json
-[
-  {
-    "url": "stun:global.stun.twilio.com:3478?transport=udp",
-    "urls": "stun:global.stun.twilio.com:3478?transport=udp"
-  },
-  {
-    "url": "turn:global.turn.twilio.com:3478?transport=udp",
-    "username": "9e4b5cd9b97055a182295750fcf27000a51fd167d43061f379a49002bc9d5ef5",
-    "urls": "turn:global.turn.twilio.com:3478?transport=udp",
-    "credential": "jf308/4r9+uPbeEYn+ho918XDlVWVWcdtWJ/Bd7R1eP="
-  },
-  {
-    "url": "turn:global.turn.twilio.com:3478?transport=tcp",
-    "username": "9e4b5cd9b97055a182295750fcf27000a51fd167d43061f379a49002bc9d5ef5",
-    "urls": "turn:global.turn.twilio.com:3478?transport=tcp",
-    "credential": "jf308/4r9+uPbeEYn+ho918XDlVWVWcdtWJ/Bd7R1eP="
-  },
-  {
-    "url": "turn:global.turn.twilio.com:443?transport=tcp",
-    "username": "9e4b5cd9b97055a182295750fcf27000a51fd167d43061f379a49002bc9d5ef5",
-    "urls": "turn:global.turn.twilio.com:443?transport=tcp",
-    "credential": "jf308/4r9+uPbeEYn+ho918XDlVWVWcdtWJ/Bd7R1eP="
-  }
-]
-```
+Provide the array of stun/turn config to iceConfig.
 
 ```ts
 const peerMessage = new PeerMessage({
-  iceConfig: [],
+  iceConfig: [
+    {
+      url: 'stun:global.stun.twilio.com:3478?transport=udp',
+      urls: 'stun:global.stun.twilio.com:3478?transport=udp',
+    },
+    {
+      url: 'turn:global.turn.twilio.com:3478?transport=udp',
+      username:
+        '9e4b5cd9b97055a182295750fcf27000a51fd167d43061f379a49002bc9d5ef5',
+      urls: 'turn:global.turn.twilio.com:3478?transport=udp',
+      credential: 'jf308/4r9+uPbeEYn+ho918XDlVWVWcdtWJ/Bd7R1eP=',
+    },
+    {
+      url: 'turn:global.turn.twilio.com:3478?transport=tcp',
+      username:
+        '9e4b5cd9b97055a182295750fcf27000a51fd167d43061f379a49002bc9d5ef5',
+      urls: 'turn:global.turn.twilio.com:3478?transport=tcp',
+      credential: 'jf308/4r9+uPbeEYn+ho918XDlVWVWcdtWJ/Bd7R1eP=',
+    },
+    {
+      url: 'turn:global.turn.twilio.com:443?transport=tcp',
+      username:
+        '9e4b5cd9b97055a182295750fcf27000a51fd167d43061f379a49002bc9d5ef5',
+      urls: 'turn:global.turn.twilio.com:443?transport=tcp',
+      credential: 'jf308/4r9+uPbeEYn+ho918XDlVWVWcdtWJ/Bd7R1eP=',
+    },
+  ],
 });
 ```
 
