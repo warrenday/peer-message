@@ -31,7 +31,7 @@ peerMessage.on('data', data => {
 });
 
 peerMessage.on('connect', () => {
-  peerMessage.send('hello world');
+  peerMessage.send({ hello: 'world });
 });
 
 peerMessage.host();
@@ -64,7 +64,7 @@ const peerMessage = new PeerMessage({
 
 Listen for events.
 
-Possible events are
+Possible events are:
 
 connect - Clients have successully established a connection  
 disconnect - The connection between two clients was lost or closed  
