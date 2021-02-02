@@ -1,1 +1,1 @@
-export { PeerMessage } from './PeerClient';
+export { PeerMessage } from './PeerMessage';

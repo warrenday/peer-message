@@ -1,4 +1,4 @@
-import { PeerMessage } from './PeerClient';
+import { PeerMessage } from './PeerMessage';
 
 jest.mock('simple-peer');
 

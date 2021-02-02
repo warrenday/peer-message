@@ -1,6 +1,6 @@
 # Peer Message
 
-Fast peer to peer messaging through WebRTC
+Fast peer to peer messaging through WebRTC with automatic reconnect.
 
 ## Problem
 
@@ -47,7 +47,7 @@ Create a new instance of PeerMessage which accepts signaling config and optional
 const peerMessage = new PeerMessage({
   iceConfig: [],
   signal: {
-    channel: 'test-channel',
+    channel: 'my-channel',
     send: data => {
       websocket.send(data);
     },
@@ -103,7 +103,7 @@ peerMessage.join();
 
 Signaling is needed in order for two peers to share how they should connect. Usually this is solved through a regular HTTP-based Web API (i.e., a REST service or WebSockets) where web applications can relay the necessary information before the peer connection is initiated.
 
-PeerMessage makes signaling easy. Here is an example of signaling using websockets. You simply need to relay the information given and received.
+PeerMessage makes signaling easy. You simply need to relay the information given and received. Here is an example of signaling using websockets.
 
 ```ts
 const start = () => {
@@ -141,7 +141,7 @@ We provide a default config pointing to free stun servers hosted by google. Howe
 ]
 ```
 
-Here is an example of using turn/stun config provided by twilio. [https://www.twilio.com/stun-turn](https://www.twilio.com/stun-turn)
+Twilio provides a great network traversal service which can be used by WebRTC, here is an example of the twilio config being used with PeerMessage. [https://www.twilio.com/stun-turn](https://www.twilio.com/stun-turn)
 
 ```ts
 const peerMessage = new PeerMessage({
@@ -177,7 +177,7 @@ const peerMessage = new PeerMessage({
 
 ## Test App
 
-See our example test app for a complete example with signaling
+See our example test app for a complete example with websocket signaling
 
 [Test App](./test/test-app)
 
@@ -185,7 +185,7 @@ See our example test app for a complete example with signaling
 
 The MIT License (MIT)
 
-Copyright (c) 2020 GraphQL Mock Network Authors
+Copyright (c) 2021 PeerMessage Authors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
