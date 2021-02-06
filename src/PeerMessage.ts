@@ -1,7 +1,6 @@
 import SimplePeer from 'simple-peer';
 import { EventEmitter } from './EventEmitter';
 import { SignalingClient, SignalMessage } from './SignalingClient';
-import { MessageData } from './types';
 
 type IceConfig = {
   url?: string;
@@ -18,15 +17,20 @@ type PeerMessageArgs = {
   signal: SignalConfig;
   iceConfig?: IceConfig;
 };
-type EventType = 'connect' | 'disconnect' | 'data' | 'error';
-type EventCallback = (data?: MessageData) => void;
+
+export interface Events<D> {
+  data: D;
+  connect: void;
+  disconnect: void;
+  error: Error;
+}
 
 const defaultIceConfig: IceConfig = [
   { urls: 'stun:stun.l.google.com:19302' },
   { urls: 'stun:global.stun.twilio.com:3478?transport=udp' },
 ];
 
-export class PeerMessage extends EventEmitter<EventType, EventCallback> {
+export class PeerMessage<D extends {}> extends EventEmitter<Events<D>> {
   public isHost: boolean = false;
   private iceConfig: IceConfig;
   private peerClient?: SimplePeer.Instance;
@@ -46,7 +50,9 @@ export class PeerMessage extends EventEmitter<EventType, EventCallback> {
   ) => {
     signalingClient.setSender(signal.send);
     signal.receive(message => {
-      const { channel, event, data }: SignalMessage = JSON.parse(message);
+      const { channel, event, data }: SignalMessage<'signal'> = JSON.parse(
+        message
+      );
       if (channel === signalingClient.getChannel()) {
         signalingClient.emit(event, data);
       }
@@ -66,7 +72,7 @@ export class PeerMessage extends EventEmitter<EventType, EventCallback> {
 
   private handleMessaging = (peerClient: SimplePeer.Instance) => {
     peerClient.on('connect', () => {
-      this.emit('connect');
+      this.emit('connect', undefined);
       this.signalingClient.removeAll();
     });
     peerClient.on('data', message => {
@@ -87,7 +93,7 @@ export class PeerMessage extends EventEmitter<EventType, EventCallback> {
     });
     peerClient.on('close', () => {
       destroyPeerClient();
-      this.emit('disconnect');
+      this.emit('disconnect', undefined);
       if (this.isHost) {
         this.host();
       } else {
@@ -133,7 +139,7 @@ export class PeerMessage extends EventEmitter<EventType, EventCallback> {
     this.signalingClient.send('readyToPair');
   };
 
-  send = (message: MessageData) => {
+  send = (message: D) => {
     if (this.peerClient) {
       this.peerClient.send(JSON.stringify(message));
     }

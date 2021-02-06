@@ -1,16 +1,20 @@
 import { EventEmitter } from './EventEmitter';
-import { MessageData } from './types';
 
 type Sender = (message: string) => void;
-type EventType = 'signal' | 'readyToPair' | 'readyToSignal';
-type EventCallback = (data?: MessageData) => void;
-export type SignalMessage = {
-  channel: string;
-  event: EventType;
-  data?: MessageData;
+
+type Events = {
+  signal: Record<string, any>;
+  readyToPair: void;
+  readyToSignal: void;
 };
 
-export class SignalingClient extends EventEmitter<EventType, EventCallback> {
+export type SignalMessage<T extends keyof Events> = {
+  channel: string;
+  event: keyof Events;
+  data?: Events[T];
+};
+
+export class SignalingClient extends EventEmitter<Events> {
   private sender?: Sender;
   private channel: string;
 
@@ -19,12 +23,12 @@ export class SignalingClient extends EventEmitter<EventType, EventCallback> {
     this.channel = channel;
   }
 
-  send = (eventType: EventType, data?: MessageData) => {
+  send = <T extends keyof Events>(eventType: T, data?: Events[T]) => {
     if (!this.channel || !this.sender) {
       return;
     }
 
-    const signalMessage: SignalMessage = {
+    const signalMessage: SignalMessage<T> = {
       channel: this.channel,
       event: eventType,
       data,

@@ -3,7 +3,7 @@ import * as websocket from './websocket';
 import { ConnectionStatus } from '../../../types';
 
 const start = () => {
-  const peerMessage = new PeerMessage({
+  const peerMessage = new PeerMessage<{ message: string }>({
     signal: {
       channel: 'test-channel',
       send: data => {

@@ -1,18 +1,18 @@
-type EventCallback = (data?: { [key: string]: any }) => void;
+type Callback<E, T extends keyof E> = (data: E[T]) => void;
 
-export class EventEmitter<Type extends string, Callback extends EventCallback> {
-  private callbacks: { name: Type; cb: Callback }[] = [];
+export class EventEmitter<E> {
+  private callbacks: { eventType: keyof E; cb: Function }[] = [];
 
-  emit = (eventType: Type, data?: object) => {
+  emit = <T extends keyof E>(eventType: T, data: E[T]) => {
     this.callbacks.forEach(callback => {
-      if (callback.name === eventType) {
+      if (callback.eventType === eventType) {
         callback.cb(data);
       }
     });
   };
 
-  on = (eventType: Type, cb: Callback) => {
-    const newCallback = { name: eventType, cb };
+  on = <T extends keyof E>(eventType: T, cb: Callback<E, T>) => {
+    const newCallback = { eventType, cb };
     this.callbacks.push(newCallback);
     return () => {
       this.callbacks = this.callbacks.filter(
