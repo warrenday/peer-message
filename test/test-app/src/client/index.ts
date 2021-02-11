@@ -5,7 +5,6 @@ import { ConnectionStatus } from '../../../types';
 const start = () => {
   const peerMessage = new PeerMessage<{ message: string }>({
     signal: {
-      channel: 'test-channel',
       send: data => {
         websocket.send(data);
       },

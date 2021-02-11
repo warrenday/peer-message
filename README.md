@@ -47,7 +47,6 @@ Create a new instance of PeerMessage which accepts signaling config and optional
 const peerMessage = new PeerMessage({
   iceConfig: [],
   signal: {
-    channel: 'my-channel',
     send: data => {
       websocket.send(data);
     },
@@ -110,7 +109,6 @@ const start = () => {
   const peerMessage = new PeerMessage({
     iceConfig: [],
     signal: {
-      channel: 'test-channel',
       send: data => {
         websocket.send(data);
       },

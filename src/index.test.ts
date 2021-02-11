@@ -4,21 +4,20 @@ jest.mock('simple-peer');
 
 const mockConfig = {
   signal: {
-    channel: 'some-channel',
     send: () => {},
     receive: () => {},
   },
 };
 
 describe('PeerMessage', () => {
-  it('creates a new channel and becomes the channel host', () => {
+  it('creates a new client and becomes host', () => {
     const client = new PeerMessage(mockConfig);
     client.host();
 
     expect(client.isHost).toBe(true);
   });
 
-  it('joins a new channel without error', () => {
+  it('creates a new client and joins', () => {
     const client = new PeerMessage(mockConfig);
     client.join();
   });
@@ -31,7 +30,7 @@ describe('PeerMessage', () => {
 
     expect(client.callbacks).toEqual([
       {
-        name: 'data',
+        eventType: 'data',
         cb: mockCallback,
       },
     ]);
@@ -48,11 +47,11 @@ describe('PeerMessage', () => {
 
     expect(client.callbacks).toEqual([
       {
-        name: 'data',
+        eventType: 'data',
         cb: mockCallback1,
       },
       {
-        name: 'data',
+        eventType: 'data',
         cb: mockCallback2,
       },
     ]);
@@ -61,7 +60,7 @@ describe('PeerMessage', () => {
 
     expect(client.callbacks).toEqual([
       {
-        name: 'data',
+        eventType: 'data',
         cb: mockCallback2,
       },
     ]);

@@ -9,27 +9,23 @@ type Events = {
 };
 
 export type SignalMessage<T extends keyof Events> = {
-  channel: string;
   event: keyof Events;
   data?: Events[T];
 };
 
 export class SignalingClient extends EventEmitter<Events> {
   private sender?: Sender;
-  private channel: string;
 
-  constructor(channel: string) {
+  constructor() {
     super();
-    this.channel = channel;
   }
 
   send = <T extends keyof Events>(eventType: T, data?: Events[T]) => {
-    if (!this.channel || !this.sender) {
+    if (!this.sender) {
       return;
     }
 
     const signalMessage: SignalMessage<T> = {
-      channel: this.channel,
       event: eventType,
       data,
     };
@@ -38,9 +34,5 @@ export class SignalingClient extends EventEmitter<Events> {
 
   setSender = (sender: Sender) => {
     this.sender = sender;
-  };
-
-  getChannel = () => {
-    return this.channel;
   };
 }

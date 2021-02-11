@@ -9,7 +9,6 @@ type IceConfig = {
   credentials?: string;
 }[];
 type SignalConfig = {
-  channel: string;
   send: (message: string) => void;
   receive: (update: (message: string) => void) => void;
 };
@@ -40,7 +39,7 @@ export class PeerMessage<D extends {}> extends EventEmitter<Events<D>> {
     super();
 
     this.iceConfig = iceConfig || defaultIceConfig;
-    this.signalingClient = new SignalingClient(signal.channel);
+    this.signalingClient = new SignalingClient();
     this.setupSignaling(signal, this.signalingClient);
   }
 
@@ -50,12 +49,8 @@ export class PeerMessage<D extends {}> extends EventEmitter<Events<D>> {
   ) => {
     signalingClient.setSender(signal.send);
     signal.receive(message => {
-      const { channel, event, data }: SignalMessage<'signal'> = JSON.parse(
-        message
-      );
-      if (channel === signalingClient.getChannel()) {
-        signalingClient.emit(event, data);
-      }
+      const { event, data }: SignalMessage<'signal'> = JSON.parse(message);
+      signalingClient.emit(event, data);
     });
   };
 
